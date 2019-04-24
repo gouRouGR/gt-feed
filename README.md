@@ -1,2 +1,2 @@
 # gt-feed
-This project is early prototyping state. Use at your own risk.
+This project is in early prototyping state. Use at your own risk.
