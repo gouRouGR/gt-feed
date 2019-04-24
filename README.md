@@ -1,2 +1,2 @@
 # gt-feed
-Detect new torrent releases on the Greek-Team.cc tracker and perform some action
+This project is early prototyping state. Use at your own risk.
