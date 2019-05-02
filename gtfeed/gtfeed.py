@@ -34,6 +34,7 @@ class GT:
 	shoutbox_url = "https://www.greek-team.cc/shoutbox.php"
 	login_payload = {"take_login": 1, "logout": "no", "username": "", "password": ""}
 	download_url = base_url + "/download2.php?torrent=%d"
+	user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
 
 	login_failed_re = re.compile(r"Login failed!")
 	shout_t_re = re.compile(
@@ -43,6 +44,7 @@ class GT:
 		self.username = username
 		self.password = password
 		self.session = requests.Session()
+		self.headers = {"User-Agent": GT.user_agent}
 		db.connect()
 		db.create_tables([TorrentModel])
 
@@ -50,7 +52,7 @@ class GT:
 		return len(TorrentModel.select().where(TorrentModel.torrent_id == torrent.torrent_id)) == 1
 
 	def check_shoutbox(self, tfilters=None) -> list:
-		r = self.session.get(self.shoutbox_url)
+		r = self.session.get(self.shoutbox_url, headers=self.headers)
 		matches = GT.shout_t_re.finditer(r.text)
 		tlist = []
 
@@ -81,7 +83,7 @@ class GT:
 		return lp
 
 	def login(self) -> bool:
-		r = self.session.post(self.login_url, data=self._lp(self.username, self.password))
+		r = self.session.post(self.login_url, data=self._lp(self.username, self.password), headers=self.headers)
 		if r.status_code != 200 or GT.login_failed_re.search(r.text):
 			return False
 		else:
@@ -96,7 +98,7 @@ class GT:
 				path = Path(cfg['general']['download_folder']) / (torrent.name + ".torrent")
 			else:
 				path = torrent.name + ".torrent"
-			with open(path, "wb") as f:
+			with open(str(path), "wb") as f:
 				for chunk in r.iter_content(8192):
 					f.write(chunk)
 				log.info("Torrent \"%s\" with id %d downloaded" % (torrent.name, torrent.torrent_id))
