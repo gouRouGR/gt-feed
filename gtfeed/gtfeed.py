@@ -101,11 +101,27 @@ class GT:
 		if r.status_code != 200:
 			log.warning("Could not download torrent %s with id %d" % (torrent.name, torrent.torrent_id))
 		else:
+			filename = GT.get_filename_from_cd(r.headers.get('content-disposition'))
+			print(filename)
+			if not filename:
+				filename = torrent.name + ".torrent"
 			if folder is not None:
-				path = Path(cfg['general']['download_folder']) / (torrent.name + ".torrent")
+				path = Path(cfg['general']['download_folder']) / filename
 			else:
-				path = torrent.name + ".torrent"
+				path = filename
 			with open(str(path), "wb") as f:
 				for chunk in r.iter_content(8192):
 					f.write(chunk)
 				log.info("Torrent \"%s\" with id %d downloaded" % (torrent.name, torrent.torrent_id))
+
+	@staticmethod
+	def get_filename_from_cd(cd):
+		"""
+		Get filename from content-disposition
+		"""
+		if not cd:
+			return None
+		fname = re.findall('filename=\"(.+)\"', cd)
+		if len(fname) == 0:
+			return None
+		return fname[0]
