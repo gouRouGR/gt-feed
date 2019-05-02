@@ -34,7 +34,7 @@ class GT:
 	shoutbox_url = "https://www.greek-team.cc/shoutbox.php"
 	login_payload = {"take_login": 1, "logout": "no", "username": "", "password": ""}
 	download_url = base_url + "/download2.php?torrent=%d"
-	user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
+	user_agent = cfg["general"]["user_agent"]
 
 	login_failed_re = re.compile(r"Login failed!")
 	shout_t_re = re.compile(
