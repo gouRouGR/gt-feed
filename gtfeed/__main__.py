@@ -2,21 +2,46 @@ import sys
 import re
 import yaml
 import logging
+import os
 from gtfeed import config
 from peewee import SqliteDatabase
+from pathlib import Path
+from shutil import copyfile
+
+log = logging.getLogger("GT")
+
+
+def config_default(cfg: dict):
+	return cfg['general']['username'] == 'username' and cfg['general']['password'] == 'password'
 
 
 def main():
 	args = sys.argv[:]
 
-	with open("config.yml", 'r') as ymlfile:
-		config.cfg = yaml.load(ymlfile, Loader=yaml.Loader)
-		config.db = SqliteDatabase(config.cfg['general']['db_path'])
+	gt_dir = Path.home() / ".gtfeed"
+
+	if not os.path.exists(str(gt_dir)):
+		os.makedirs(str(gt_dir))
+	default_cfg_path = str(gt_dir / "config.yml")
+	if not os.path.exists(default_cfg_path):
+		copyfile("config.yml", default_cfg_path)
+
+	cfg = default_cfg_path
+	try:
+		with open(cfg, 'r') as ymlfile:
+			config.cfg = yaml.load(ymlfile, Loader=yaml.Loader)
+			if config_default(config.cfg):
+				log.error("You have to change the default credentials in the configuration file. "
+				          "The default config file is in \"%s\"" % default_cfg_path)
+				exit(0)
+			config.db = SqliteDatabase(config.cfg['general']['db_path'])
+	except FileNotFoundError as e:
+		log.error("Config file \"%s\" not found. Exiting..." % cfg)
+		exit(0)
 
 	from gtfeed.gtfeed import GT, TorrentModel  # this needs to be after the config initialization
 
 	filters = config.cfg['filtering']['filters']
-	log = logging.getLogger("GT")
 
 	logging.basicConfig()
 	logging.getLogger().setLevel(logging.DEBUG)
