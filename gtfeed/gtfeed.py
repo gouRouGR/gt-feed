@@ -3,20 +3,11 @@
 import requests
 import re
 import logging
-from peewee import SqliteDatabase, Model, IntegerField, CharField
 from pathlib import Path
+from config import cfg, db
+from peewee import Model, IntegerField, CharField
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
 log = logging.getLogger("GT")
-
-# filters = []  # If empty then no torrents will be downloaded
-# filters should be valid python regular expressions
-filters = ["filter1", "filter2"]
-
-download_folder = Path("C:/Users/user/Downloads")
-
-db = SqliteDatabase('gt.db')
 
 
 class BaseModel(Model):
@@ -67,7 +58,7 @@ class GT:
 		log.info("Total filters: %d", 0 if no_filters else len(tfilters))
 		if not no_filters:
 			log.debug("Filter list:")
-			for f in filters:
+			for f in cfg['filtering']['filters']:
 				log.debug(f)
 		log.debug("No torrents will pass as there is no filter" if no_filters else "Applying filters...")
 		log.debug(" ============ Total torrents found in shoutbox ============")
@@ -102,24 +93,10 @@ class GT:
 			log.warning("Could not download torrent %s with id %d" % (torrent.name, torrent.torrent_id))
 		else:
 			if folder is not None:
-				path = download_folder / (torrent.name + ".torrent")
+				path = Path(cfg['general']['download_folder']) / (torrent.name + ".torrent")
 			else:
 				path = torrent.name + ".torrent"
 			with open(path, "wb") as f:
 				for chunk in r.iter_content(8192):
 					f.write(chunk)
 				log.info("Torrent \"%s\" with id %d downloaded" % (torrent.name, torrent.torrent_id))
-
-
-if __name__ == "__main__":
-	gt = GT("username", "password")
-	if not gt.login():
-		log.error("Could not log in")
-	else:
-		torrent_list = gt.check_shoutbox([re.compile(f, re.IGNORECASE) for f in filters])
-		for t in torrent_list:
-			if GT.downloaded(t):
-				log.debug("Torrent %s with id %d has already been downloaded, skipping..." % (t.name, t.torrent_id))
-			else:
-				gt.download_torrent(t)
-				TorrentModel.create(torrent_id=t.torrent_id, name=t.name, uploaded_by=t.uploaded_by)

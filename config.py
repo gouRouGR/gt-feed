@@ -1,0 +1,2 @@
+cfg = None
+db = None
