@@ -39,6 +39,8 @@ class GT:
 	login_failed_re = re.compile(r"Login failed!")
 	shout_t_re = re.compile(
 		r"\[New Torrent\]</font></b><a href=\"details\.php\?id=(\d+)\"><b><.*?> (.*?)</font></b></a> Uploaded by <b><font color=.*?>(.*?)<")
+	shout_t_re_anon = re.compile(
+		r"\[New Torrent\]</font></b><a href=\"details\.php\?id=(\d+)\"><b><.*?> (.*?)</font></b></a><br")
 
 	def __init__(self, username: str, password: str):
 		self.username = username
@@ -54,6 +56,7 @@ class GT:
 	def check_shoutbox(self, tfilters=None) -> list:
 		r = self.session.get(self.shoutbox_url, headers=self.headers)
 		matches = GT.shout_t_re.finditer(r.text)
+		matches_anon = GT.shout_t_re_anon.finditer(r.text)
 		tlist = []
 
 		no_filters = tfilters is None or len(tfilters) == 0
@@ -68,6 +71,10 @@ class GT:
 			log.debug(m.group(2))
 			if any([f.search(m.group(2)) for f in tfilters]):
 				tlist.append(Torrent(int(m.group(1)), m.group(2), m.group(3)))
+		for m in matches_anon:
+			log.debug(m.group(2))
+			if any([f.search(m.group(2)) for f in tfilters]):
+				tlist.append(Torrent(int(m.group(1)), m.group(2), "Anonymous"))
 		log.debug(" ==========================================================")
 		log.debug(" ========= Torrent list that passed the filtering =========")
 		for t in tlist:
