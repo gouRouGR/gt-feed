@@ -1,10 +1,11 @@
 general:
-    username: 'localhost'
-    password: 'root'
+    username: 'username'
+    password: 'password'
     db_path: 'gt.db'
     download_folder: 'C:/Users/user/Downloads'
 filtering:
     filters:
-        - 'filter1'
-        - 'filter2'
+    - 'filter1'
+    - 'filter2'
+    - 'filter3'
     ignore_case: yes

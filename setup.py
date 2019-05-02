@@ -17,10 +17,14 @@ setuptools.setup(
 		"License :: OSI Approved :: GNU Affero General Public License v3",
 		"Operating System :: OS Independent",
 	],
-	scripts=["bin/gt-feed"],
 	install_requires=[
 		"requests",
 		"peewee",
 		"pyyaml"
 	],
+	entry_points={
+		'console_scripts': [
+			'gtfeed = gtfeed.__main__:main'
+		]
+	}
 )

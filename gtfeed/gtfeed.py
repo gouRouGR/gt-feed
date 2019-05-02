@@ -4,7 +4,7 @@ import requests
 import re
 import logging
 from pathlib import Path
-from config import cfg, db
+from gtfeed.config import cfg, db
 from peewee import Model, IntegerField, CharField
 
 log = logging.getLogger("GT")
