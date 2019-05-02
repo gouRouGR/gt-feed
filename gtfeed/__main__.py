@@ -19,12 +19,13 @@ def main():
 	args = sys.argv[:]
 
 	gt_dir = Path.home() / ".gtfeed"
+	cur_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 
 	if not os.path.exists(str(gt_dir)):
 		os.makedirs(str(gt_dir))
 	default_cfg_path = str(gt_dir / "config.yml")
 	if not os.path.exists(default_cfg_path):
-		copyfile("config.yml", default_cfg_path)
+		copyfile(str(cur_dir / ".." / "config.yml"), default_cfg_path)
 
 	cfg = default_cfg_path
 	try:
