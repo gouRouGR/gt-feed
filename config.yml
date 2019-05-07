@@ -1,7 +1,7 @@
 general:
     username: 'username'
     password: 'password'
-    db_path: 'gt.db'
+    db_path: 'gt.db'  # this is relative to folder containing config.yml
     download_folder: 'C:/Users/user/Downloads'
     user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
 filtering:
@@ -10,3 +10,6 @@ filtering:
     - 'filter2'
     - 'filter3'
     ignore_case: yes
+logging:
+    logfile: 'gtfeed.log'  # this is relative to folder containing config.yml
+    loglevel: 'debug'
