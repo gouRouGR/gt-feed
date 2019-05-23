@@ -3,6 +3,7 @@ import yaml
 import logging
 import os
 import argparse
+from os.path import abspath
 from gtfeed import config
 from peewee import SqliteDatabase
 from pathlib import Path
@@ -33,9 +34,11 @@ def setup_logging(logfile, level):
 	root_logger = logging.getLogger()
 	root_logger.addHandler(console_handler)
 	root_logger.addHandler(file_handler)
+	root_logger.setLevel(lv[level])
 
 
 def main():
+	logging.getLogger().setLevel(logging.DEBUG)
 	default_gt_dir = Path.home() / ".gtfeed"
 	cur_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 	default_cfg_path = str(default_gt_dir / "config.yml")
@@ -50,10 +53,16 @@ def main():
 	cfg = Path(args.config)
 	work_dir = cfg.parent
 	if args.generate_config:
+		p = abspath(str(cur_dir / ".." / "config.yml"))
 		if not os.path.exists(str(work_dir)):
 			os.makedirs(str(work_dir))
 		if not os.path.exists(str(cfg)):
-			copyfile(str(cur_dir / ".." / "config.yml"), str(cfg))
+			copyfile(p, str(cfg))
+			print("Default config file generated at " + str(cfg))
+		else:
+			print("Config file at %s already exists" % str(cfg))
+		exit(0)
+
 
 	try:
 		with open(str(cfg), 'r') as ymlfile:
