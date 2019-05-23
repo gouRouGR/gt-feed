@@ -6,7 +6,7 @@ GT-feed keeps track of what .torrent files have been downloaded in a sqlite data
 # Installation
 ```
 git clone https://github.com/GeoMSK/gt-feed.git
-pip install ./gt-feed
+pip3 install ./gt-feed
 ```
 
 # Configuration
