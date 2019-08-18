@@ -10,7 +10,7 @@ pip3 install ./gt-feed
 ```
 
 # Configuration
-Run the following to generate the default configuration file:
+Run the following to generate the default configuration file (default location: ```[user home]/.gtfeed/config.yml```):
 ```
 gt-feed –-generate-config
 ```
