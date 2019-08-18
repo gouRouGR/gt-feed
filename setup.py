@@ -12,6 +12,9 @@ setuptools.setup(
 	long_description_content_type="text/markdown",
 	url="https://github.com/geomsk/gt-feed",
 	packages=setuptools.find_packages(),
+	package_data={
+		'gtfeed': ['rss.png', 'config.yml'],
+	},
 	classifiers=[
 		"Programming Language :: Python :: 3",
 		"License :: OSI Approved :: GNU Affero General Public License v3",
@@ -20,7 +23,9 @@ setuptools.setup(
 	install_requires=[
 		"requests",
 		"peewee",
-		"pyyaml"
+		"pyyaml",
+		"pystray",
+		"Pillow"
 	],
 	entry_points={
 		'console_scripts': [
