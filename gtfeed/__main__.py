@@ -15,6 +15,7 @@ from shutil import copyfile
 from PIL import Image
 
 log = logging.getLogger("GT")
+cfg = ""
 
 
 class Tray:
@@ -42,7 +43,7 @@ class Tray:
 	@staticmethod
 	def _action_oconfig():
 		print("action_OConfig")
-		os.system(str(Path.home() / ".gtfeed" / "config.yml"))
+		os.system(str(cfg))
 
 	@staticmethod
 	def _action_exit():
