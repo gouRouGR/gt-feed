@@ -33,11 +33,13 @@ general:
     db_path: 'gt.db'  # this is relative to folder containing config.yml
     download_folder: 'C:/Users/user/Downloads'
     user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+    delay: '600'  # in seconds. It must be delay>fluctuation. This is ignored if --once is specified
+    fluctuation: '120'  # in seconds. 0 to disable
 filtering:
     filters:
-    - 'filter1'
-    - 'filter2'
-    - 'filter3'
+        - 'filter1'
+        - 'filter2'
+        - 'filter3'
     ignore_case: yes
 logging:
     logfile: 'gtfeed.log'  # this is relative to folder containing config.yml
@@ -47,4 +49,6 @@ logging:
 # Run
 You simply run it by executing ```gtfeed –c [path to config]``` or ```python -m gtfeed -c [path to config]```  
 Note that if you don't add the ```-c [path to config]``` then the default location of the config file will be used. That is ```[user home]/.gtfeed/config.yml```  
-You can also add this to a cron job to execute periodically
+This way gtfeed will periodically check for new torrents as configured in the configuration file.
+
+You can make gtfeed check only once and terminate by specifying the --once flag `gtfeed -c [path to config] --once`
