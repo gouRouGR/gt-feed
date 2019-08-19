@@ -38,7 +38,7 @@ class Tray:
 	@staticmethod
 	def _action_run():
 		print("action_run")
-		main()
+		exec()
 
 	@staticmethod
 	def _action_oconfig():
